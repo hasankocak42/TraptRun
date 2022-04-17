@@ -21,6 +21,7 @@ public class PlayerControl : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("cube"))
         {
+            //collision.gameObject.isStatic = false;
             collision.gameObject.GetComponent<Renderer>().material = _cubematerial;
             collision.gameObject.GetComponent<Collider>().enabled = false;
             collision.gameObject.AddComponent<Rigidbody>();
