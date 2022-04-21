@@ -6,10 +6,12 @@ public class EnemyMoveScript : MonoBehaviour
 {
     private bool _isroad = false;
     public float _road;
-    private int _taraf;
+    [SerializeField] private int _taraf;
     private Transform a;
     private bool _run = true;
     private Animator _animator;
+    [SerializeField] private float _speed;
+    public GameObject _player;
     
     // Start is called before the first frame update
     void Start()
@@ -21,7 +23,7 @@ public class EnemyMoveScript : MonoBehaviour
             _taraf = 1;
             _road = Random.Range(0, 8);
         }
-        if (transform.position.x >= 8)
+        else if (transform.position.x >= 8)
         {
             _taraf = 2;
         _road = Random.Range(0,8);
@@ -39,9 +41,16 @@ public class EnemyMoveScript : MonoBehaviour
 
     private void Move()
     {
+        if (_player.transform.position.z >= transform.position.z + 5)
+        {
+            _speed = 10;
+        }
+        else
+            _speed = 5.1f;
+
         if (_run)
         {
-        transform.Translate(Vector3.forward * 6f * Time.deltaTime);
+        transform.Translate(Vector3.forward * _speed * Time.deltaTime);
 
         }
         if (_road -1<= transform.position.x && transform.position.x <= _road)
@@ -49,13 +58,13 @@ public class EnemyMoveScript : MonoBehaviour
             
             if (_taraf==1)
             {
-            transform.Rotate(new Vector3(0f, -135f, 0f));
+                transform.rotation = Quaternion.Euler(0,0,0); ;
                 _taraf = 3;
 
             }
-            if (_taraf ==2)
+            else if (_taraf ==2)
             {
-            transform.Rotate(new Vector3(0f, 135f, 0f));
+                transform.rotation = Quaternion.Euler(0, 0, 0);
                 _taraf = 3;
             }
         }

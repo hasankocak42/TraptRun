@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - cube
+  - end
+  - enemy
   layers:
   - Default
   - TransparentFX
