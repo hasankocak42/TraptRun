@@ -7,7 +7,7 @@ public class EnemyMoveScript : MonoBehaviour
     private bool _isroad = false;
     public float _road;
     [SerializeField] private int _taraf;
-    private Transform a;
+    
     private bool _run = true;
     private Animator _animator;
     [SerializeField] private float _speed;
@@ -35,18 +35,23 @@ public class EnemyMoveScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (GameManager._isgameactive)
+        {
         Move();
+
+        }
     }
 
     private void Move()
     {
-        if (_player.transform.position.z >= transform.position.z + 5)
+        if (_player.transform.position.z > transform.position.z)
         {
-            _speed = 10;
+            _speed = 10f;
         }
         else
             _speed = 5.1f;
+
+
 
         if (_run)
         {

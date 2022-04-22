@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using DG.Tweening;
 public class PlayerControl : MonoBehaviour
 {
     public Material _cubematerial;
@@ -9,8 +9,9 @@ public class PlayerControl : MonoBehaviour
     private Rigidbody _rigi;
     private bool _run;
     public Transform _helicopter;
-    private bool _isjump;
-
+    [SerializeField] private bool _isjump;
+    public GameManager _gamemanager;
+    private bool gameactive = true;
 
     
 
@@ -27,23 +28,54 @@ public class PlayerControl : MonoBehaviour
         _isjump = false;
         _animator = GetComponent<Animator>();
         _rigi = GetComponent<Rigidbody>();
+        _animator.SetBool("Run", _run);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_run)
+        if (transform.position.y<=-10)
         {
-            transform.Translate(Vector3.forward * 5f * Time.deltaTime);
-
+            GameManager._isgameactive = false;
+            _gamemanager._canvasgameover.SetActive(true);
         }
+
         if (_isjump)
         {
+            Jumping();
+        }
+
+        if (Input.touchCount > 0 && gameactive)
+        {
+            _gamemanager.StartGame();
+            gameactive = false;
+        }
+
+        if (GameManager._isgameactive)
+        {
+            
+
+            if (_run)
+            {
+                transform.Translate(Vector3.forward * 5f * Time.deltaTime);
+
+            }
+           
+            
+
+            
+        }
+    }
+
+    private void Jumping()
+    {
+        transform.DOMove(_helicopter.position,2f);
+          /*  Debug.Log("jump");
             // The center of the arc
-            Vector3 center = (transform.position + _helicopter.position) ;
+            Vector3 center = (transform.position + _helicopter.position) * 0.5f;
 
             // move the center a bit downwards to make the arc vertical
-            center -= new Vector3(0, 10 , 0);
+            center -= new Vector3(0, 9, 0);
 
             // Interpolate over the arc relative to center
             Vector3 riseRelCenter = transform.position - center;
@@ -54,30 +86,39 @@ public class PlayerControl : MonoBehaviour
             // the total journey.
 
 
-            transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, 0.05f) ;
-            transform.position += center;
-        }
+            transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, 0.05f);
+            transform.position += center;*/
 
-        _animator.SetBool("Run", _run);
+        
     }
 
     private void OnCollisionEnter(Collision collision)
     {
         
-        if (collision.gameObject.CompareTag("enemy"))
+        if (collision.gameObject.CompareTag("enemy")&&GameManager._isgameactive)
         {
             _run = false;
 
             GameManager._isgameactive = false;
+            _gamemanager._canvasgameover.SetActive(true);
+           
             _animator.SetTrigger("Fall");
+           
 
 
+        }
+        if (collision.gameObject.CompareTag("Finish") && GameManager._isgameactive)
+        {
+            _gamemanager._canvaswin.SetActive(true);
+            GameManager._isgameactive = false;
         }
 
 
 
 
-    }
+
+
+        }
     private void OnCollisionExit(Collision collision)
     {
         if (GameManager._isgameactive)
@@ -87,9 +128,10 @@ public class PlayerControl : MonoBehaviour
             {
                 _run = false;
                 Debug.Log("finish");
-                GameManager._isgameactive = false;
                 _animator.SetTrigger("Jump");
                 _isjump = true;
+
+                
             }
 
 

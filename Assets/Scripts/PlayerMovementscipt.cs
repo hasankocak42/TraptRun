@@ -17,7 +17,11 @@ public class PlayerMovementscipt : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        MoveInputs();
+        if (GameManager._isgameactive)
+        {
+            MoveInputs();
+
+        }
     }
 
     private void MoveInputs()
@@ -32,7 +36,7 @@ public class PlayerMovementscipt : MonoBehaviour
                 _firsttouch = _touch.position.x;
                 if (_touch.deltaPosition.x < 0)
                 {
-                    
+
                     transform.rotation = Quaternion.Euler(0, (_touch.deltaPosition.x - _firsttouch) / 10, 0);
 
                 }
